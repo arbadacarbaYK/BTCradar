@@ -68,14 +68,15 @@ export function Settings() {
             <Switch
               label="Share my location with others in BTCradar"
               description="Allow BTCradar to share your live location with other opted-in users. Requires browser permission above. You can turn this off anytime."
-              checked={user.isLocationSharing && !!permissionState?.granted}
+              checked={user.isLocationSharing}
               onChange={setLocationSharing}
-              disabled={!permissionState?.granted}
               highlightColor="#8B5CF6"
             />
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-              You control whether your location is shared in the app. Turning this off stops sharing, but does not affect browser permission.
-            </div>
+            {permissionState && !permissionState.granted && (
+              <div className="text-xs text-red-500 dark:text-red-400 mt-2 font-bold">
+                Location sharing is enabled in the app, but browser permission is not granted. You must allow location access in your browser settings for sharing to work.
+              </div>
+            )}
           </div>
         )}
       </div>

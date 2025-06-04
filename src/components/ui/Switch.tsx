@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { twMerge } from 'tailwind-merge';
 
 interface SwitchProps {
@@ -20,14 +20,9 @@ export function Switch({
   className,
   highlightColor = '#F7931A',
 }: SwitchProps) {
-  const [isChecked, setIsChecked] = useState(checked);
-
   const handleChange = () => {
     if (disabled) return;
-    
-    const newValue = !isChecked;
-    setIsChecked(newValue);
-    onChange?.(newValue);
+    onChange?.(!checked);
   };
 
   return (
@@ -36,21 +31,21 @@ export function Switch({
         <button
           type="button"
           role="switch"
-          aria-checked={isChecked}
+          aria-checked={checked}
           disabled={disabled}
           onClick={handleChange}
           className={twMerge(
             'relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-            isChecked ? '' : 'bg-gray-300 dark:bg-gray-600',
+            checked ? '' : 'bg-gray-300 dark:bg-gray-600',
             disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
           )}
-          style={isChecked ? { background: highlightColor, boxShadow: `0 0 0 2px ${highlightColor}33` } : {}}
+          style={checked ? { background: highlightColor, boxShadow: `0 0 0 2px ${highlightColor}33` } : {}}
           tabIndex={0}
         >
           <span
             className={twMerge(
               'inline-block h-4 w-4 transform rounded-full bg-white transition-transform',
-              isChecked ? 'translate-x-6' : 'translate-x-1'
+              checked ? 'translate-x-6' : 'translate-x-1'
             )}
           />
         </button>
