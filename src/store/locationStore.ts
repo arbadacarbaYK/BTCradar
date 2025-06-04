@@ -27,7 +27,7 @@ interface LocationState {
   getLocationMessage: () => string | null;
 }
 
-type PermissionState = {
+export type PermissionState = {
   granted: boolean;
   state: 'granted' | 'prompt' | 'denied';
   backgroundGranted?: boolean;

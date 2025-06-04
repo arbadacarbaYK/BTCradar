@@ -15,6 +15,10 @@ declare global {
     nostr?: {
       getPublicKey(): Promise<string>;
       signEvent(event: Event): Promise<Event>;
+      nip04: {
+        encrypt(pubkey: string, content: string): Promise<string>;
+        decrypt(pubkey: string, content: string): Promise<string>;
+      };
       getRelays(): Promise<{ [url: string]: { read: boolean; write: boolean } }>;
     };
   }
@@ -107,7 +111,7 @@ export function LoginPage() {
             Connect with Nostr and enable location sharing after login
           </p>
         </div>
-        <div className="mt-8 py-8 px-4 sm:px-10 space-y-6">
+        <div className="mt-8 py-8 px-2 sm:px-6 space-y-6 max-w-xs mx-auto">
           <div>
             <label htmlFor="private-key" className="sr-only">
               Private Key (nsec or hex)
@@ -120,13 +124,13 @@ export function LoginPage() {
               onChange={(e) => setPrivateKey(e.target.value)}
               disabled={isLoading}
               fullWidth
-              className="rounded-lg shadow-md border border-[#8B5CF6]/30 focus:ring-[#8B5CF6]"
+              className="rounded-lg shadow-md border border-[#8B5CF6]/30 focus:ring-[#8B5CF6] text-sm"
             />
           </div>
-          <div>
+          <div className="space-y-3">
             <Button
               onClick={handleNsecLogin}
-              className="w-full flex justify-center py-2 px-4 rounded-lg shadow-md bg-[#F7931A] hover:bg-[#E78008] text-white font-bold text-base"
+              className="w-full flex justify-center py-2 px-2 rounded-lg shadow-md bg-[#F7931A] hover:bg-[#E78008] text-white font-bold text-sm max-w-xs mx-auto"
               disabled={!privateKey || isLoading}
             >
               <Key className="h-5 w-5 mr-2" />
@@ -134,7 +138,7 @@ export function LoginPage() {
             </Button>
             <Button
               onClick={handleNip07Login}
-              className="w-full flex justify-center py-2 px-4 mt-4 rounded-lg shadow-md bg-[#8B5CF6] hover:bg-[#7C3AED] text-white font-bold text-base"
+              className="w-full flex justify-center py-2 px-2 rounded-lg shadow-md bg-[#8B5CF6] hover:bg-[#7C3AED] text-white font-bold text-sm max-w-xs mx-auto"
               disabled={isLoading}
             >
               <Bitcoin className="h-5 w-5 mr-2" />

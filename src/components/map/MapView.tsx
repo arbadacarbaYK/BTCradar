@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import { LatLngBounds } from 'leaflet';
 import { UserMarker } from './UserMarker';
 import { useLocationStore } from '../../store/locationStore';
+import type { PermissionState } from '../../store/locationStore';
 import { useMapStore } from '../../store/mapStore';
 import { useNotificationStore } from '../../store/notificationStore';
 import { useUserStore } from '../../store/userStore';
@@ -216,7 +217,7 @@ export function MapView() {
         <div className="absolute inset-0 z-[1000] bg-white/90 dark:bg-gray-900/90 flex flex-col items-center justify-center p-6">
           <h2 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">Enable Location Access</h2>
           <p className="mb-2 text-gray-700 dark:text-gray-300">To use BTCMaps, you need to enable location access in your browser and system settings.</p>
-          {permissionState && (permissionState as any).isBrave ? (
+          {permissionState && (permissionState as PermissionState & { isBrave?: boolean }).isBrave ? (
             <div className="mb-2 text-yellow-600 dark:text-yellow-400">
               <b>Brave detected:</b> Click the orange lion icon (Brave Shields) in the address bar and allow location for this site.<br />
               Also, click the lock icon {'>'} Site settings {'>'} Location {'>'} Allow.
@@ -239,16 +240,16 @@ export function MapView() {
         </div>
       )}
       {/* BTCMap Legend/Filter */}
-      <div className="absolute bottom-24 left-4 z-[900] p-[2px] rounded-full bg-gradient-to-r from-[#F7931A] to-[#8B5CF6] shadow-2xl">
-        <div className="bg-white/80 dark:bg-gray-800/80 rounded-full p-3 text-sm flex flex-col gap-2">
-          <div className="font-extrabold text-[#F7931A] dark:text-[#8B5CF6] mb-1 flex items-center gap-2">
+      <div className="absolute bottom-24 left-2 right-2 z-[900] p-[2px] rounded-full bg-gradient-to-r from-[#F7931A] to-[#8B5CF6] shadow-2xl max-w-[95vw]">
+        <div className="bg-white/80 dark:bg-gray-800/80 rounded-full p-2 text-xs flex flex-col gap-1 max-w-[95vw]">
+          <div className="font-extrabold text-[#F7931A] dark:text-[#8B5CF6] mb-1 flex items-center gap-2 text-xs">
             <Zap className="h-4 w-4 text-[#8B5CF6]" /> BTCMap Legend
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1 overflow-x-auto max-w-[90vw]">
             {Object.entries(typeColors).map(([type, color]: [string, string]) => (
               <span
                 key={type}
-                className="inline-flex items-center px-3 py-1 rounded-full font-bold shadow-md"
+                className="inline-flex items-center px-2 py-1 rounded-full font-bold shadow-md text-xs"
                 style={{ background: color, color: '#fff', textTransform: 'capitalize', boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
               >
                 <Zap className="h-3 w-3 mr-1 text-white/80" />

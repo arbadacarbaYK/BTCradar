@@ -156,9 +156,9 @@ export const ZapButton: React.FC<ZapButtonProps> = ({
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 z-[2000] flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={handleClose}>
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={handleClose}>
           <div
-            className="relative w-full max-w-xl min-w-[340px] rounded-2xl shadow-2xl bg-[#181A20] border-2 border-[#8B5CF6]/30 p-6 mx-2 animate-fade-in"
+            className="relative w-full max-w-xl min-w-[90vw] pt-16 rounded-2xl shadow-2xl bg-[#181A20] border-2 border-[#8B5CF6]/30 p-6 mx-2 animate-fade-in max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
             <button
