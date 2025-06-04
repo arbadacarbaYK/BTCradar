@@ -71,22 +71,20 @@ export function Settings() {
               label="Share my location with others in BTCradar"
               description="Allow BTCradar to share your live location with other opted-in users. Requires browser permission above. You can turn this off anytime."
               checked={user.isLocationSharing}
-              onChange={async (isSharing) => {
-                setLocationSharing(isSharing);
+              onChange={(isSharing) => {
                 if (isSharing) {
-                  const perm = await checkLocationPermission();
-                  if (perm.state === 'prompt') {
-                    navigator.geolocation.getCurrentPosition(
-                      () => {
-                        startWatchingLocation();
-                      },
-                      () => {
-                        checkLocationPermission();
-                      }
-                    );
-                  } else if (perm.state === 'granted') {
-                    startWatchingLocation();
-                  }
+                  navigator.geolocation.getCurrentPosition(
+                    () => {
+                      setLocationSharing(true);
+                      startWatchingLocation();
+                    },
+                    () => {
+                      setLocationSharing(false);
+                      checkLocationPermission();
+                    }
+                  );
+                } else {
+                  setLocationSharing(false);
                 }
               }}
               highlightColor="#8B5CF6"
