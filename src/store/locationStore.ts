@@ -10,6 +10,7 @@ interface LocationState {
   geolocationStatus: 'idle' | 'watching' | 'error';
   watchId: number | null;
   permissionState: PermissionState | null;
+  isLocationSharing: boolean;
   
   // Actions
   setUserLocations: (locations: UserLocation[]) => void;
@@ -21,6 +22,7 @@ interface LocationState {
   stopWatchingLocation: () => void;
   requestLocationPermission: () => Promise<boolean>;
   checkLocationPermission: () => Promise<PermissionState>;
+  setLocationSharingWithPermission: (isSharing: boolean) => Promise<void>;
   
   // Selectors
   getUserLocation: (pubkey: string) => UserLocation | undefined;
@@ -42,6 +44,7 @@ export const useLocationStore = create<LocationState>()(
       geolocationStatus: 'idle',
       watchId: null,
       permissionState: null,
+      isLocationSharing: false,
       
       setUserLocations: (locations) => set({ userLocations: locations }),
       
@@ -375,6 +378,30 @@ export const useLocationStore = create<LocationState>()(
         }
 
         return null;
+      },
+
+      setLocationSharingWithPermission: async (isSharing: boolean) => {
+        const { checkLocationPermission, startWatchingLocation } = get();
+        set({ isLocationSharing: isSharing });
+        if (isSharing) {
+          const perm = await checkLocationPermission();
+          set({ permissionState: perm });
+          if (perm.state === 'prompt') {
+            // Trigger browser prompt
+            navigator.geolocation.getCurrentPosition(
+              () => {
+                // Permission granted, start watching
+                startWatchingLocation();
+              },
+              () => {
+                // Permission denied or error, just update state
+                checkLocationPermission().then((perm2) => set({ permissionState: perm2 }));
+              }
+            );
+          } else if (perm.state === 'granted') {
+            startWatchingLocation();
+          }
+        }
       },
     }),
     {

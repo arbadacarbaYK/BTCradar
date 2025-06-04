@@ -232,8 +232,9 @@ export function MapView() {
             onClick={() => {
               // Retry permission prompt
               navigator.geolocation.getCurrentPosition(
-                () => window.location.reload(),
-                () => window.location.reload()
+                () => {
+                  addNotification('Location access denied or failed. Please check your browser settings and try again.', 'error');
+                }
               );
             }}
           >Retry Location Access</button>

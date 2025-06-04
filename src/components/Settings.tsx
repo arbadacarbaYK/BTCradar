@@ -11,7 +11,7 @@ export function Settings() {
     isLocationSharing: state.isLocationSharing,
     isLoggedIn: state.isLoggedIn,
   }));
-  const setLocationSharing = useUserStore(state => state.setLocationSharing);
+  const setLocationSharingWithPermission = useLocationStore(state => state.setLocationSharingWithPermission);
   const permissionState = useLocationStore(state => state.permissionState);
 
   return (
@@ -69,7 +69,7 @@ export function Settings() {
               label="Share my location with others in BTCradar"
               description="Allow BTCradar to share your live location with other opted-in users. Requires browser permission above. You can turn this off anytime."
               checked={user.isLocationSharing}
-              onChange={setLocationSharing}
+              onChange={setLocationSharingWithPermission}
               highlightColor="#8B5CF6"
             />
             {permissionState && !permissionState.granted && (
