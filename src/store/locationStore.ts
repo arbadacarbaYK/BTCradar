@@ -77,18 +77,18 @@ export const useLocationStore = create<LocationState>()(
       }
 
       return {
-        userLocations: [],
-        currentLocation: null,
+      userLocations: [],
+      currentLocation: null,
         geolocationStatus: 'idle',
-        watchId: null,
+      watchId: null,
         permissionState: null,
         isLocationSharing: false,
-        
-        setUserLocations: (locations) => set({ userLocations: locations }),
-        
+      
+      setUserLocations: (locations) => set({ userLocations: locations }),
+      
         addUserLocation: async (location) => {
-          const { userLocations } = get();
-          const existingIndex = userLocations.findIndex(loc => loc.pubkey === location.pubkey);
+        const { userLocations } = get();
+        const existingIndex = userLocations.findIndex(loc => loc.pubkey === location.pubkey);
           
           try {
             const profile = await getUserProfile(location.pubkey);
@@ -103,9 +103,9 @@ export const useLocationStore = create<LocationState>()(
           } catch (error) {
             console.error('Error fetching user profile:', error);
           }
-          
-          if (existingIndex >= 0) {
-            const updatedLocations = [...userLocations];
+        
+        if (existingIndex >= 0) {
+          const updatedLocations = [...userLocations];
             updatedLocations[existingIndex] = {
               ...updatedLocations[existingIndex],
               ...location,
@@ -113,20 +113,20 @@ export const useLocationStore = create<LocationState>()(
               name: location.name || updatedLocations[existingIndex].name,
               displayName: location.displayName || updatedLocations[existingIndex].displayName
             };
-            set({ userLocations: updatedLocations });
-          } else {
-            set({ userLocations: [...userLocations, location] });
-          }
-        },
-        
-        removeUserLocation: (pubkey) => {
-          const { userLocations } = get();
-          set({ userLocations: userLocations.filter(loc => loc.pubkey !== pubkey) });
-        },
-        
-        updateCurrentLocation: (location) => set({ currentLocation: location }),
-        
-        setGeolocationStatus: (status) => set({ 
+          set({ userLocations: updatedLocations });
+        } else {
+          set({ userLocations: [...userLocations, location] });
+        }
+      },
+      
+      removeUserLocation: (pubkey) => {
+        const { userLocations } = get();
+        set({ userLocations: userLocations.filter(loc => loc.pubkey !== pubkey) });
+      },
+      
+      updateCurrentLocation: (location) => set({ currentLocation: location }),
+      
+      setGeolocationStatus: (status) => set({ 
           geolocationStatus: status.isAvailable ? 'watching' : 'error'
         }),
 
@@ -219,7 +219,7 @@ export const useLocationStore = create<LocationState>()(
 
             // If permission is already granted, no popup, just resolve true
             if (permissionState.state === 'granted') {
-              set({ 
+              set({
                 permissionState: {
                   granted: true,
                   state: 'granted'
@@ -234,7 +234,7 @@ export const useLocationStore = create<LocationState>()(
 
             // If denied, resolve false and show UI message
             if (permissionState.state === 'denied') {
-              set({ 
+              set({
                 permissionState: {
                   granted: false,
                   state: 'denied'
@@ -356,14 +356,14 @@ export const useLocationStore = create<LocationState>()(
                 set({ geolocationStatus: 'error' });
                 // Do not throw, just return false
                 // Optionally, you can set a state to show error in UI
-              },
-              {
-                enableHighAccuracy: true,
+            },
+            {
+              enableHighAccuracy: true,
                 timeout: 15000, // 15s timeout for continuous updates
                 maximumAge: 5000, // Allow positions up to 5s old
-              }
-            );
-
+            }
+          );
+          
             // Store the watch ID
             localStorage.setItem('btcmaps-location-watch-id', watchId.toString());
             set({ watchId });
@@ -372,21 +372,21 @@ export const useLocationStore = create<LocationState>()(
             console.error('Error starting location watch:', error);
             set({ geolocationStatus: 'error' });
             return false;
-          }
-        },
-        
-        stopWatchingLocation: () => {
-          const { watchId } = get();
+        }
+      },
+      
+      stopWatchingLocation: () => {
+        const { watchId } = get();
           if (watchId) {
-            navigator.geolocation.clearWatch(watchId);
+          navigator.geolocation.clearWatch(watchId);
             localStorage.removeItem('btcmaps-location-watch-id');
             set({ watchId: null, geolocationStatus: 'idle' });
-          }
-        },
-        
-        getUserLocation: (pubkey) => {
-          return get().userLocations.find(loc => loc.pubkey === pubkey);
-        },
+        }
+      },
+      
+      getUserLocation: (pubkey) => {
+        return get().userLocations.find(loc => loc.pubkey === pubkey);
+      },
 
         getLocationMessage: () => {
           const state = get();

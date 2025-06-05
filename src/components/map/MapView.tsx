@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, useMap, useMapEvents } from 'react-leaflet';
 import { LatLngBounds } from 'leaflet';
 import { UserMarker } from './UserMarker';
 import { useLocationStore } from '../../store/locationStore';
-import type { PermissionState } from '../../store/locationStore';
 import { useMapStore } from '../../store/mapStore';
 import { useNotificationStore } from '../../store/notificationStore';
 import { useUserStore } from '../../store/userStore';
@@ -11,7 +10,6 @@ import { vibrate } from '../../utils/helpers';
 import { UserLocation } from '../../types';
 import 'leaflet/dist/leaflet.css';
 import { fetchBTCMapLocations } from '../../utils/btcmapApi';
-import { useNavigate } from 'react-router-dom';
 
 // Custom component to update the map view when center changes
 function MapUpdater() {
@@ -98,11 +96,10 @@ function MapController() {
 }
 
 export function MapView() {
-  const { currentLocation, userLocations, permissionState, checkLocationPermission, startWatchingLocation } = useLocationStore();
+  const { currentLocation, userLocations, checkLocationPermission, startWatchingLocation } = useLocationStore();
   const settings = useMapStore(state => state.settings);
   const user = useUserStore(state => state);
   const { addNotification } = useNotificationStore();
-  const navigate = useNavigate();
 
   const [mapCenter] = useState<[number, number]>(settings.defaultCenter);
   const [mapZoom] = useState(settings.defaultZoom);
@@ -164,50 +161,12 @@ export function MapView() {
     }
   }, [currentLocation, user?.isLocationSharing]);
 
-  // Only show location permission overlay if not granted and user is sharing location
-  const showLocationOverlay = !permissionState?.granted && user?.isLocationSharing;
-  
-  // Add effect to re-check permission and hide overlay as soon as location is fetched
-  useEffect(() => {
-    if (currentLocation && permissionState?.granted) {
-      // Automatically navigate to map tab if not already there
-      navigate('/');
-    }
-  }, [currentLocation, permissionState, navigate]);
-  
   return (
     <div className="flex-1 relative mt-14 mb-14 touch-none">
       {isLocating && (
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-[1000] bg-white dark:bg-gray-900 rounded-lg shadow-lg p-6 flex flex-col items-center">
           <svg className="animate-spin h-8 w-8 text-blue-500 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
           <span className="text-lg font-medium text-gray-700 dark:text-gray-300">Locating…</span>
-        </div>
-      )}
-      {showLocationOverlay && (
-        <div className="absolute inset-0 z-[1000] bg-white/90 dark:bg-gray-900/90 flex flex-col items-center justify-center p-6">
-          <h2 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">Enable Location Access</h2>
-          <p className="mb-2 text-gray-700 dark:text-gray-300">To use BTCMaps, you need to enable location access in your browser and system settings.</p>
-          {permissionState && (permissionState as PermissionState & { isBrave?: boolean }).isBrave ? (
-            <div className="mb-2 text-yellow-600 dark:text-yellow-400">
-              <b>Brave detected:</b> Click the orange lion icon (Brave Shields) in the address bar and allow location for this site.<br />
-              Also, click the lock icon {'>'} Site settings {'>'} Location {'>'} Allow.
-            </div>
-          ) : (
-            <div className="mb-2">
-              Click the lock icon in the address bar {'>'} Site settings {'>'} Location {'>'} Allow.
-            </div>
-          )}
-          <button
-            className="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-            onClick={() => {
-              // Retry permission prompt
-              navigator.geolocation.getCurrentPosition(
-                () => {
-                  addNotification('Location access denied or failed. Please check your browser settings and try again.', 'error');
-                }
-              );
-            }}
-          >Retry Location Access</button>
         </div>
       )}
       

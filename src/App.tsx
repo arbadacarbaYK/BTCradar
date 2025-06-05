@@ -10,7 +10,6 @@ import { BottomNav } from './components/BottomNav';
 import { ErrorFallback } from './components/ErrorFallback';
 import { ErrorBoundary } from 'react-error-boundary';
 import { LoginPage } from './pages/LoginPage';
-import { LocationSettingsPage } from './pages/LocationSettingsPage';
 
 function App() {
   const isLoggedIn = useUserStore(state => state.isLoggedIn);
@@ -48,26 +47,15 @@ function App() {
   return (
     <Router>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <div className="flex flex-col h-screen">
-          {isLoggedIn && <Navigation />}
-          <Routes>
-            {!isLoggedIn ? (
-              <>
-                <Route index element={<LoginPage />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </>
-            ) : (
-              <>
-                <Route index element={<MapView />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="settings" element={<Settings />} />
-                <Route path="location-settings" element={<LocationSettingsPage />} />
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </>
-            )}
-          </Routes>
-          {isLoggedIn && <BottomNav />}
-        </div>
+        <Routes>
+          <Route path="/" element={<MapView />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+        <Navigation />
+        <BottomNav />
       </ErrorBoundary>
     </Router>
   );
