@@ -69,7 +69,7 @@ export function LoginPage() {
       const hexKey = nsecToHex(privateKey);
       if (!hexKey) {
         throw new Error('Invalid private key format');
-      }
+        }
       await login(hexKey);
       // Already set sharing and started location above
         navigate('/');
@@ -80,10 +80,10 @@ export function LoginPage() {
       setIsLoading(false);
     }
   };
-
+  
   const handleNip07Login = async () => {
     try {
-      setIsLoading(true);
+    setIsLoading(true);
       if (window.nostr) {
         const pubkey = await window.nostr.getPublicKey();
         await login(pubkey);
@@ -123,7 +123,7 @@ export function LoginPage() {
                 onClick={requestLocation}
                 className="w-full flex justify-center py-2 px-2 rounded-lg shadow-md bg-blue-500 hover:bg-blue-600 text-white font-bold text-sm max-w-xs mx-auto"
                 disabled={locationPrompted}
-              >
+            >
                 Enable Location Access
             </Button>
               <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">

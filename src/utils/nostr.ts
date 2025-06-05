@@ -1,7 +1,7 @@
 import { 
-  SimplePool,
-  getEventHash,
-  signEvent,
+  SimplePool, 
+  getEventHash, 
+  signEvent, 
   validateEvent,
   nip19,
   nip04,
@@ -71,9 +71,9 @@ export async function getUserProfile(pubkey: string): Promise<NostrProfile | nul
             ws.send(JSON.stringify([
               'REQ',
               'profile',
-              {
-                kinds: [0],
-                authors: [pubkey],
+      {
+        kinds: [0],
+        authors: [pubkey],
                 limit: 1
               }
             ]));
@@ -91,7 +91,7 @@ export async function getUserProfile(pubkey: string): Promise<NostrProfile | nul
                   ws.close();
                   console.log('Profile found on relay', relay, profile);
                   resolve({
-                    pubkey,
+        pubkey,
                     name: profile.name,
                     display_name: profile.display_name,
                     picture: profile.picture,
@@ -200,20 +200,20 @@ export async function publishLocationUpdate(
 
         const event: NostrToolsEvent = {
           kind: 4, // Encrypted Direct Message
-          pubkey,
-          created_at: Math.floor(Date.now() / 1000),
+      pubkey,
+      created_at: Math.floor(Date.now() / 1000),
           tags: [
             ['p', recipientPubkey],
             ['g', group.id], // Tag with group ID
             ['t', 'location'] // Tag for filtering
           ],
           content: encryptedContent,
-          id: '',
-          sig: ''
-        };
+      id: '',
+      sig: ''
+    };
 
         // Get the event hash
-        event.id = getEventHash(event);
+    event.id = getEventHash(event);
 
         // Sign the event
         if (window.nostr) {
@@ -228,26 +228,26 @@ export async function publishLocationUpdate(
               sig: ''
             });
 
-            if (verifyEvent(signedEvent)) {
+        if (verifyEvent(signedEvent)) {
               const pubs = pool.publish(RELAYS, signedEvent);
-              await Promise.all(pubs);
-              return signedEvent.id;
-            }
-          } catch (e) {
-            console.error('NIP-07 signing failed, falling back to private key:', e);
-          }
+          await Promise.all(pubs);
+          return signedEvent.id;
         }
+      } catch (e) {
+        console.error('NIP-07 signing failed, falling back to private key:', e);
+      }
+    }
 
-        if (privateKey) {
-          event.sig = signEvent(event, privateKey);
-          if (verifyEvent(event)) {
+    if (privateKey) {
+      event.sig = signEvent(event, privateKey);
+      if (verifyEvent(event)) {
             const pubs = pool.publish(RELAYS, event);
-            await Promise.all(pubs);
-            return event.id;
-          }
-        }
+        await Promise.all(pubs);
+        return event.id;
+      }
+    }
 
-        return null;
+    return null;
       });
 
     const results = await Promise.all(publishPromises);
@@ -300,7 +300,7 @@ export function subscribeToLocationUpdates(
 
       const locationData = JSON.parse(decryptedContent);
       if (locationData.type === 'location') {
-        callback(event);
+      callback(event);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -616,30 +616,57 @@ export function subscribeToGroupZaps(
 }
 
 export async function publishLocation(location: UserLocation): Promise<void> {
-  const privateKey = localStorage.getItem('btcmaps-private-key');
-  if (!privateKey) {
-    throw new Error('No private key found');
+  let pubkey: string;
+  let event: NostrToolsEvent;
+
+  if (window.nostr) {
+    // NIP-07: get pubkey and sign event
+    pubkey = await window.nostr.getPublicKey();
+    event = {
+      kind: 30023,
+      pubkey,
+      created_at: Math.floor(Date.now() / 1000),
+      tags: [
+        ['g', DEFAULT_GROUP_ID],
+      ],
+      content: JSON.stringify({
+        latitude: location.latitude,
+        longitude: location.longitude,
+        accuracy: location.accuracy,
+        lastUpdated: location.lastUpdated,
+      }),
+      id: '',
+      sig: '',
+    };
+    event.id = getEventHash(event);
+    const signed = await window.nostr.signEvent(event);
+    event.sig = signed.sig;
+  } else {
+    // nsec/hex: use private key from localStorage
+    const privateKey = localStorage.getItem('btcmaps-private-key');
+    if (!privateKey) {
+      throw new Error('No private key found');
+    }
+    pubkey = getPublicKey(privateKey);
+    event = {
+      kind: 30023,
+      pubkey,
+      created_at: Math.floor(Date.now() / 1000),
+      tags: [
+        ['g', DEFAULT_GROUP_ID],
+      ],
+      content: JSON.stringify({
+        latitude: location.latitude,
+        longitude: location.longitude,
+        accuracy: location.accuracy,
+        lastUpdated: location.lastUpdated,
+      }),
+      id: '',
+      sig: '',
+    };
+    event.id = getEventHash(event);
+    event.sig = signEvent(event, privateKey);
   }
-
-  const event: NostrToolsEvent = {
-    kind: 30023, // Correct event kind for location sharing
-    pubkey: getPublicKey(privateKey),
-    created_at: Math.floor(Date.now() / 1000),
-    tags: [
-      ['g', DEFAULT_GROUP_ID],
-    ],
-    content: JSON.stringify({
-      latitude: location.latitude,
-      longitude: location.longitude,
-      accuracy: location.accuracy,
-      lastUpdated: location.lastUpdated,
-    }),
-    id: '', // Will be set by getEventHash
-    sig: '', // Will be set by signEvent
-  };
-
-  event.id = getEventHash(event);
-  event.sig = signEvent(event, privateKey);
 
   // Publish to all relays
   const promises = RELAYS.map(async (relay) => {
