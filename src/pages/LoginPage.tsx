@@ -25,7 +25,7 @@ declare global {
 }
 
 export function LoginPage() {
-  const { login, isLoggedIn } = useUserStore();
+  const { login, isLoggedIn, setLocationSharing } = useUserStore();
   const { startWatchingLocation } = useLocationStore();
   const { addNotification } = useNotificationStore();
   const [privateKey, setPrivateKey] = useState('');
@@ -49,15 +49,19 @@ export function LoginPage() {
       }
       await login(hexKey);
       
-      // After successful login, request location permission
-      const locationGranted = await startWatchingLocation();
-      if (!locationGranted) {
-        addNotification('Location permission is required to use the app', 'error');
-        navigate('/location-settings');
-        return;
-      }
-      
-      navigate('/');
+      // Immediately trigger geolocation prompt after login
+      navigator.geolocation.getCurrentPosition(
+        () => {
+          setLocationSharing(true);
+          startWatchingLocation();
+          navigate('/');
+        },
+        () => {
+          setLocationSharing(false);
+          addNotification('Location permission is required to use the app', 'error');
+          navigate('/location-settings');
+        }
+      );
     } catch (error) {
       console.error('Login error:', error);
       addNotification(error instanceof Error ? error.message : 'Failed to login', 'error');
@@ -74,15 +78,19 @@ export function LoginPage() {
         const pubkey = await window.nostr.getPublicKey();
         await login(pubkey);
         
-        // After successful login, request location permission
-        const locationGranted = await startWatchingLocation();
-        if (!locationGranted) {
-          addNotification('Location permission is required to use the app', 'error');
-          navigate('/location-settings');
-          return;
-        }
-        
-        navigate('/');
+        // Immediately trigger geolocation prompt after login
+        navigator.geolocation.getCurrentPosition(
+          () => {
+            setLocationSharing(true);
+            startWatchingLocation();
+            navigate('/');
+          },
+          () => {
+            setLocationSharing(false);
+            addNotification('Location permission is required to use the app', 'error');
+            navigate('/location-settings');
+          }
+        );
       } else {
         throw new Error('NIP-07 extension not found');
       }

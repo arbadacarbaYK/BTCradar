@@ -22,14 +22,14 @@ export function SettingsPage() {
   };
   
   return (
-    <div className="container max-w-md mx-auto px-4 py-20">
+    <div className="container max-w-md mx-auto px-4 py-8 md:py-20">
       <div className="flex items-center mb-6">
         <Settings className="h-6 w-6 text-[#F7931A] mr-2" />
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
       </div>
       
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Map Settings</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 md:p-6 mb-6">
+        <h2 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4">Map Settings</h2>
         
         <div className="space-y-6">
           <div className="flex items-start">
@@ -68,11 +68,11 @@ export function SettingsPage() {
         </div>
       </div>
       
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Privacy Settings</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 md:p-6">
+        <h2 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4">Privacy Settings</h2>
         
         <div className="space-y-4">
-          <p className="text-sm text-gray-500 dark:text-gray-400">
+          <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400">
             Your location is only shared with other users who have opted in, and only while you have location sharing enabled in BTCradar.
           </p>
           

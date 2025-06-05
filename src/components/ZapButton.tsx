@@ -158,7 +158,7 @@ export const ZapButton: React.FC<ZapButtonProps> = ({
       {isOpen && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={handleClose}>
           <div
-            className="relative w-full max-w-xl min-w-[90vw] pt-16 rounded-2xl shadow-2xl bg-[#181A20] border-2 border-[#8B5CF6]/30 p-6 mx-2 animate-fade-in max-h-[90vh] overflow-y-auto"
+            className="relative w-full max-w-xl min-w-[90vw] pt-8 md:pt-16 rounded-2xl shadow-2xl bg-[#181A20] border-2 border-[#8B5CF6]/30 p-3 md:p-6 mx-2 animate-fade-in max-h-[90vh] overflow-y-auto text-sm"
             onClick={e => e.stopPropagation()}
           >
             <button
@@ -171,7 +171,7 @@ export const ZapButton: React.FC<ZapButtonProps> = ({
             <h2 className="text-xl font-extrabold text-[#F7931A] mb-4 text-center tracking-tight">Zap {recipientName || 'User'}</h2>
             {!invoice ? (
               <>
-                <div className="grid grid-cols-2 gap-2 mb-4 max-sm:grid-cols-1">
+                <div className="grid grid-cols-2 gap-2 mb-4 max-sm:grid-cols-1 text-sm">
                   {DEFAULT_AMOUNTS.map((amount) => (
                     <button
                       key={amount}
@@ -183,7 +183,7 @@ export const ZapButton: React.FC<ZapButtonProps> = ({
                     </button>
                   ))}
                 </div>
-                <div className="mb-4 flex flex-col sm:flex-row items-stretch gap-2">
+                <div className="mb-4 flex flex-col sm:flex-row items-stretch gap-2 text-sm">
                   <input
                     type="number"
                     min="1"
@@ -201,7 +201,7 @@ export const ZapButton: React.FC<ZapButtonProps> = ({
                   </button>
                 </div>
                 <textarea
-                  className="w-full rounded-lg border border-[#8B5CF6]/30 bg-[#23262F] text-white placeholder-gray-400 px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6]"
+                  className="w-full rounded-lg border border-[#8B5CF6]/30 bg-[#23262F] text-white placeholder-gray-400 px-3 py-2 mb-4 focus:outline-none focus:ring-2 focus:ring-[#8B5CF6] text-sm"
                   placeholder="Add a comment (optional)"
                   value={comment}
                   onChange={e => setComment(e.target.value)}
@@ -221,10 +221,10 @@ export const ZapButton: React.FC<ZapButtonProps> = ({
               </>
             ) : (
               <>
-                <div className="flex flex-col items-center mb-4">
+                <div className="flex flex-col items-center mb-4 text-sm">
                   <QRCodeSVG value={invoice} size={200} bgColor="#fff" fgColor="#000" />
-                  <div className="mt-4 text-center text-white font-bold text-lg break-all flex flex-col items-center w-full">
-                    <div className="flex items-center gap-2 w-full justify-center">
+                  <div className="mt-4 text-center text-white font-bold text-base md:text-lg break-all flex flex-col items-center w-full">
+                    <div className="flex items-center gap-2 w-full justify-center text-sm">
                       <span className="truncate max-w-[220px]" title={invoice}>{invoice.slice(0, 12)}...{invoice.slice(-8)}</span>
                       <button
                         onClick={copyInvoice}
@@ -235,7 +235,7 @@ export const ZapButton: React.FC<ZapButtonProps> = ({
                       </button>
                     </div>
                   </div>
-                  <div className="mt-2 flex flex-wrap gap-2 justify-center">
+                  <div className="mt-2 flex flex-wrap gap-2 justify-center text-sm">
                     {WALLET_LINKS.map((wallet) => (
                       <button
                         key={wallet.name}
@@ -249,7 +249,7 @@ export const ZapButton: React.FC<ZapButtonProps> = ({
                 </div>
                 <button
                   onClick={handleSuccess}
-                  className="w-full mt-2 px-4 py-2 rounded-lg bg-[#F7931A] text-white font-bold hover:bg-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#F7931A] shadow"
+                  className="w-full mt-2 px-4 py-2 rounded-lg bg-[#F7931A] text-white font-bold hover:bg-[#8B5CF6] focus:outline-none focus:ring-2 focus:ring-[#F7931A] shadow text-sm"
                 >
                   Done
                 </button>

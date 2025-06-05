@@ -17,8 +17,8 @@ export function Settings() {
   const permissionState = useLocationStore(state => state.permissionState);
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-16 px-4 bg-gradient-to-br from-[#F7931A]/30 via-white to-[#8B5CF6]/30 dark:from-[#0F172A] dark:via-gray-900 dark:to-[#8B5CF6]/20">
-      <div className="max-w-md w-full space-y-8 bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-2xl border border-[#F7931A]/20 dark:border-[#8B5CF6]/20 backdrop-blur-md p-8">
+    <div className="min-h-screen flex items-center justify-center py-8 md:py-16 px-4 bg-gradient-to-br from-[#F7931A]/30 via-white to-[#8B5CF6]/30 dark:from-[#0F172A] dark:via-gray-900 dark:to-[#8B5CF6]/20">
+      <div className="max-w-md w-full space-y-8 bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-2xl border border-[#F7931A]/20 dark:border-[#8B5CF6]/20 backdrop-blur-md p-4 md:p-8 text-sm">
         <div className="flex items-center mb-8">
           <span className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-[#F7931A]/10 mr-3">
             <Bitcoin className="h-6 w-6 text-[#F7931A]" />
@@ -26,11 +26,11 @@ export function Settings() {
           <h1 className="text-3xl font-extrabold text-[#0F172A] dark:text-white tracking-tight">Settings</h1>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 mb-8 border border-[#F7931A]/10 dark:border-gray-700">
-          <h2 className="text-lg font-semibold text-[#F7931A] dark:text-[#F7931A] mb-4 flex items-center">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 md:p-6 mb-8 border border-[#F7931A]/10 dark:border-gray-700">
+          <h2 className="text-base md:text-lg font-semibold text-[#F7931A] dark:text-[#F7931A] mb-4 flex items-center">
             Map Settings
           </h2>
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             <Switch
               label="Show Other Users"
               description="Display other opted-in users on the map."
@@ -49,17 +49,17 @@ export function Settings() {
         </div>
 
         {user && (
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 border border-[#8B5CF6]/10 dark:border-gray-700 mb-8">
-            <h2 className="text-lg font-semibold text-[#8B5CF6] dark:text-[#8B5CF6] mb-4 flex items-center">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-4 md:p-6 border border-[#8B5CF6]/10 dark:border-gray-700 mb-8">
+            <h2 className="text-base md:text-lg font-semibold text-[#8B5CF6] dark:text-[#8B5CF6] mb-4 flex items-center">
               Location Sharing
             </h2>
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <div className="mb-3 md:mb-4">
+              <label className="block text-xs md:text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Location Permission (browser/system)
               </label>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 text-xs md:text-sm">
                 <span className={`inline-block w-3 h-3 rounded-full ${permissionState?.granted ? 'bg-green-500' : permissionState?.state === 'prompt' ? 'bg-yellow-400' : 'bg-red-500'}`}></span>
-                <span className="text-sm text-gray-700 dark:text-gray-300">
+                <span className="text-xs md:text-sm text-gray-700 dark:text-gray-300">
                   {permissionState?.granted ? 'Granted' : permissionState?.state === 'prompt' ? 'Prompt (not decided)' : 'Denied'}
                 </span>
               </div>

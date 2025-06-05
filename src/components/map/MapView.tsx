@@ -10,9 +10,8 @@ import { useUserStore } from '../../store/userStore';
 import { vibrate } from '../../utils/helpers';
 import { UserLocation } from '../../types';
 import 'leaflet/dist/leaflet.css';
-import { fetchBTCMapLocations, fetchBTCMapLocationTypes } from '../../utils/btcmapApi';
+import { fetchBTCMapLocations } from '../../utils/btcmapApi';
 import { useNavigate } from 'react-router-dom';
-import { Zap } from 'lucide-react';
 
 // Custom component to update the map view when center changes
 function MapUpdater() {
@@ -109,35 +108,6 @@ export function MapView() {
   const [mapZoom] = useState(settings.defaultZoom);
   const [isRequestingLocation, setIsRequestingLocation] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
-  const [typeColors, setTypeColors] = useState<Record<string, string>>({
-    default: '#F7931A',
-    atm: '#22C55E',
-    restaurant: '#EF4444',
-    bar: '#8B5CF6',
-    shop: '#3B82F6',
-    service: '#F59E0B',
-  });
-
-  // Assign a color from a palette for unknown types
-  function generateColor(index: number) {
-    // HSL: 0-360 hue, 60% sat, 55% light
-    return `hsl(${(index * 47) % 360}, 60%, 55%)`;
-  }
-
-  useEffect(() => {
-    fetchBTCMapLocationTypes().then(types => {
-      setTypeColors(prev => {
-        const newColors = { ...prev };
-        let colorIndex = 0;
-        types.forEach(type => {
-          if (!newColors[type]) {
-            newColors[type] = generateColor(colorIndex++);
-          }
-        });
-        return newColors;
-      });
-    });
-  }, []);
 
   // Create current user location object
   const currentUserLocation: UserLocation | null = currentLocation ? {
@@ -240,26 +210,6 @@ export function MapView() {
           >Retry Location Access</button>
         </div>
       )}
-      {/* BTCMap Legend/Filter */}
-      <div className="absolute bottom-24 left-2 right-2 z-[900] p-[2px] rounded-full bg-gradient-to-r from-[#F7931A] to-[#8B5CF6] shadow-2xl max-w-[95vw]">
-        <div className="bg-white/80 dark:bg-gray-800/80 rounded-full p-2 text-xs flex flex-col gap-1 max-w-[95vw]">
-          <div className="font-extrabold text-[#F7931A] dark:text-[#8B5CF6] mb-1 flex items-center gap-2 text-xs">
-            <Zap className="h-4 w-4 text-[#8B5CF6]" /> BTCMap Legend
-          </div>
-          <div className="flex flex-wrap gap-1 overflow-x-auto max-w-[90vw]">
-            {Object.entries(typeColors).map(([type, color]: [string, string]) => (
-              <span
-                key={type}
-                className="inline-flex items-center px-2 py-1 rounded-full font-bold shadow-md text-xs"
-                style={{ background: color, color: '#fff', textTransform: 'capitalize', boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
-              >
-                <Zap className="h-3 w-3 mr-1 text-white/80" />
-                {type}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
       
       <MapContainer
         center={mapCenter}

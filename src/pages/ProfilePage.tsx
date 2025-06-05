@@ -82,10 +82,10 @@ export function ProfilePage() {
   const npub = nip19.npubEncode(pubkeyString);
 
   return (
-    <div className="container max-w-md mx-auto px-4 py-20">
+    <div className="container max-w-md mx-auto px-4 py-8 md:py-20">
       <div className="bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-2xl border-4 border-transparent bg-clip-padding p-0 relative" style={{ borderImage: 'linear-gradient(90deg, #F7931A, #8B5CF6) 1' }}>
         <div className="h-24 bg-gradient-to-r from-[#F7931A]/80 to-[#8B5CF6]/80 rounded-t-2xl"></div>
-        <div className="px-6 py-5 relative">
+        <div className="px-4 md:px-6 py-4 md:py-5 relative">
           <div className="absolute -top-12 left-6">
             {(user.picture && user.picture !== '') ? (
               <img 
@@ -101,16 +101,16 @@ export function ProfilePage() {
               />
             )}
           </div>
-          <div className="mt-16">
-            <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+          <div className="mt-16 text-sm md:text-base">
+            <h1 className="text-lg md:text-2xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
               {user.displayName || user.name}
               <span className="inline-block px-2 py-0.5 rounded-full bg-[#8B5CF6]/10 text-[#8B5CF6] text-xs font-bold ml-2">@BTCradar</span>
             </h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 font-semibold">Shadowy supercoder (or just a pleb)? You belong here.</p>
+            <p className="text-xs md:text-sm text-gray-500 dark:text-gray-400 mt-1 font-semibold">Shadowy supercoder (or just a pleb)? You belong here.</p>
             {user.about && (
-              <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 whitespace-pre-line">{user.about}</p>
+              <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 mt-2 whitespace-pre-line">{user.about}</p>
             )}
-            <div className="flex flex-wrap gap-2 mt-3">
+            <div className="flex flex-wrap gap-2 mt-3 text-xs md:text-sm">
               <span className="inline-flex items-center px-2 py-1 rounded-full bg-[#F7931A]/10 text-[#F7931A] text-xs font-bold border border-[#F7931A]/30">{npub}</span>
               {user.nip05 && (
                 <span className="inline-flex items-center px-2 py-1 rounded-full bg-[#8B5CF6]/10 text-[#8B5CF6] text-xs font-bold border border-[#8B5CF6]/30">{user.nip05}</span>
@@ -120,8 +120,8 @@ export function ProfilePage() {
               )}
               <span className="inline-flex items-center px-2 py-1 rounded-full bg-[#F7931A]/10 text-[#F7931A] text-xs font-bold border border-[#F7931A]/30">Zaps: {zapCount}</span>
             </div>
-            <div className="mt-6 space-y-4">
-              <div className="flex items-center text-gray-700 dark:text-gray-300">
+            <div className="mt-6 space-y-3 md:space-y-4">
+              <div className="flex items-center text-gray-700 dark:text-gray-300 text-xs md:text-sm">
                 <MapPin className="h-5 w-5 mr-2 text-[#F7931A]" />
                 {currentLocation ? (
                   <span>
@@ -131,11 +131,11 @@ export function ProfilePage() {
                   <span>Location not available</span>
                 )}
               </div>
-              <div className="flex items-center text-gray-700 dark:text-gray-300">
+              <div className="flex items-center text-gray-700 dark:text-gray-300 text-xs md:text-sm">
                 <Clock className="h-5 w-5 mr-2 text-[#8B5CF6]" />
                 <span>Last updated: {formatDateTime(Date.now())}</span>
               </div>
-              <div className="flex items-center gap-2 mt-4">
+              <div className="flex items-center gap-2 mt-4 text-xs md:text-sm">
                 <ZapButton
                   recipientPubkey={user.pubkey || ''}
                   recipientName={user.displayName || user.name || npub}
@@ -162,12 +162,12 @@ export function ProfilePage() {
         </div>
       </div>
       {/* All Time Zaps Section */}
-      <div className="bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-xl border mt-8 p-6">
-        <h2 className="text-lg font-bold text-[#F7931A] mb-4">All Time Zaps</h2>
+      <div className="bg-white/80 dark:bg-gray-900/80 rounded-2xl shadow-xl border mt-8 p-4 md:p-6">
+        <h2 className="text-base md:text-lg font-bold text-[#F7931A] mb-4">All Time Zaps</h2>
         {zapEvents.length === 0 ? (
-          <div className="text-gray-500 dark:text-gray-400">No zaps received yet.</div>
+          <div className="text-xs md:text-sm text-gray-500 dark:text-gray-400">No zaps received yet.</div>
         ) : (
-          <ul className="divide-y divide-gray-200 dark:divide-gray-700">
+          <ul className="divide-y divide-gray-200 dark:divide-gray-700 text-xs md:text-sm">
             {zapEvents.map((event, idx) => {
               const amountTag = event.tags.find((tag: string[]) => tag[0] === 'amount');
               const amount = amountTag ? amountTag[1] : '?';
