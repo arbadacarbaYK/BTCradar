@@ -622,10 +622,12 @@ export async function publishLocation(location: UserLocation): Promise<void> {
   }
 
   const event: NostrToolsEvent = {
-    kind: 27235, // Custom event kind for location sharing
+    kind: 30023, // Correct event kind for location sharing
     pubkey: getPublicKey(privateKey),
     created_at: Math.floor(Date.now() / 1000),
-    tags: [],
+    tags: [
+      ['g', DEFAULT_GROUP_ID],
+    ],
     content: JSON.stringify({
       latitude: location.latitude,
       longitude: location.longitude,
@@ -643,18 +645,14 @@ export async function publishLocation(location: UserLocation): Promise<void> {
   const promises = RELAYS.map(async (relay) => {
     try {
       const ws = new WebSocket(relay);
-      
       return new Promise<void>((resolve, reject) => {
         ws.onopen = () => {
           ws.send(JSON.stringify(['EVENT', event]));
-          
-          // Close connection after sending
           setTimeout(() => {
             ws.close();
             resolve();
           }, 1000);
         };
-
         ws.onerror = (error) => {
           console.error(`Failed to publish to ${relay}:`, error);
           ws.close();
@@ -667,7 +665,6 @@ export async function publishLocation(location: UserLocation): Promise<void> {
     }
   });
 
-  // Wait for all relays to complete
   await Promise.allSettled(promises);
 }
 
