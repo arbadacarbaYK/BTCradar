@@ -2,16 +2,16 @@ import React from 'react';
 import { useLocationStore } from '../store/locationStore';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/Button';
+import { useUserStore } from '../store/userStore';
 
 export function LocationSettingsPage() {
   const ua = navigator.userAgent;
   const isIOS = /iPhone|iPad|iPod/.test(ua);
   const isAndroid = /Android/.test(ua);
   const isFirefox = /Firefox/.test(ua);
-  const isBrave = /Brave/.test(ua) || (window.navigator as any).brave;
+  const isBrave = /Brave/.test(ua) || (typeof (window.navigator as Navigator & { brave?: unknown }).brave !== 'undefined');
   const isChrome = /Chrome/.test(ua) && !isBrave;
 
-  const { startWatchingLocation } = useLocationStore();
   const navigate = useNavigate();
 
   let instructions = '';
@@ -33,11 +33,19 @@ export function LocationSettingsPage() {
     instructions = `Check your browser or system settings to allow location access for this site.`;
   }
 
-  const handleRetry = async () => {
-    const granted = await startWatchingLocation();
-    if (granted) {
-      navigate('/');
-    }
+  const handleRetry = () => {
+    navigator.geolocation.getCurrentPosition(
+      () => {
+        // Permission granted: set toggle and start watching
+        useUserStore.getState().setLocationSharing(true);
+        useLocationStore.getState().startWatchingLocation();
+        navigate('/');
+      },
+      () => {
+        // Permission denied: set toggle off, stay on page
+        useUserStore.getState().setLocationSharing(false);
+      }
+    );
   };
 
   return (
