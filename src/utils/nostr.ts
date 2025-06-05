@@ -706,7 +706,7 @@ export function subscribeToAllLocations(callback: (location: UserLocation) => vo
         accuracy: content.accuracy,
         lastUpdated: content.lastUpdated,
       });
-    } catch (e) {
+    } catch {
       // ignore
     }
   });
