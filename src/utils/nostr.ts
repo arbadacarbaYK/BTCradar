@@ -687,3 +687,31 @@ export async function fetchAllZapsForPubkey(pubkey: string): Promise<NostrToolsE
     return [];
   }
 }
+
+export const DEFAULT_GROUP_ID = 'btcradar-default';
+export const LOCATION_KIND = 30023;
+
+// Subscribe to all BTCradar location events (kind 30023, group tag)
+export function subscribeToAllLocations(callback: (location: UserLocation) => void) {
+  const filter: Filter = {
+    kinds: [LOCATION_KIND],
+    '#g': [DEFAULT_GROUP_ID],
+    // Optionally, add a time window
+  };
+  const sub = pool.sub(RELAYS, [filter]);
+  sub.on('event', (event: NostrToolsEvent) => {
+    try {
+      const content = JSON.parse(event.content);
+      callback({
+        pubkey: event.pubkey,
+        latitude: content.latitude,
+        longitude: content.longitude,
+        accuracy: content.accuracy,
+        lastUpdated: content.lastUpdated,
+      });
+    } catch (e) {
+      // ignore
+    }
+  });
+  return () => sub.unsub();
+}
