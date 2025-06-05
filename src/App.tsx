@@ -48,11 +48,19 @@ function App() {
     <Router>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <Routes>
-          <Route path="/" element={<MapView />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="*" element={<Navigate to="/" />} />
+          {!isLoggedIn ? (
+            <>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </>
+          ) : (
+            <>
+              <Route path="/" element={<MapView />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </>
+          )}
         </Routes>
         <Navigation />
         <BottomNav />
